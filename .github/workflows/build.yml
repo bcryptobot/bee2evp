@@ -59,8 +59,6 @@ jobs:
     - name: Build Bee2evp
       working-directory: ${{github.workspace}}/build
       run: |
-        export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH}"
-        sudo ldconfig
         cmake -DCMAKE_BUILD_TYPE=Release \
           -DBEE2_LIBRARY_DIRS=${local}/lib \
           -DBEE2_INCLUDE_DIRS=${local}/include \
@@ -71,8 +69,6 @@ jobs:
         make > build.log 2>&1 || (cat build.log && exit 1)
         make install > build.log 2>&1 || (cat build.log && exit 1)
         ls -la ${local}/lib/libbee2evp.so
-        export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
-          sed -e "s|${local}/lib:||")
     - name: Attach Bee2evp
       run: |
         cp ${local}/openssl.cnf.dist ${local}/openssl.cnf
@@ -92,9 +88,11 @@ jobs:
       run: |
         cp -a ../test/. .
         export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH}"
+        export PATH="${local}/bin:${PATH}"
         sudo ldconfig
-        python --version
-        python test.py
+        python3 --version
+        python3 test.py
+        export PATH=$(echo "$PATH" | sed -e "s|${local}/bin:||")
         export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
           sed -e "s|${local}/lib:||")
     - name: Print Bee2evp logs

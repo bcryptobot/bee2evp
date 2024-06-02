@@ -102,7 +102,7 @@ def btls_test():
 		s_nopsk = threading.Thread(target=btls_server_cert, 
 			args=(tmpdirname, server_log_file, curve))
 		s_nopsk.run()
-		time.sleep(100)
+		time.sleep(1)
 		c_nopsk = threading.Thread(target=btls_client_cert, 
 			args=(client_log_file, curve, noPSK_ciphersuites))
 		c_nopsk.run()
