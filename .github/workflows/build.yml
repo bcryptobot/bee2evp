@@ -87,7 +87,8 @@ jobs:
       continue-on-error: true
       run: |
         cp -a ../test/. .
-        export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH:-}"
+        export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH}"
+        sudo ldconfig
         python --version
         python test.py
         export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
