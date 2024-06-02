@@ -31,9 +31,9 @@ def btls_server_cert(tmpdirname, server_log_file, curve, psk=False):
 
 	if psk:
 		cmd = 's_server -key {} -cert {} -tls1_2 -psk 123456 -psk_hint 123 \
-			>> {}'.format(priv, cert, server_log_file)
+			-port 443 >> {}'.format(priv, cert, server_log_file)
 	else:
-		cmd = ('s_server -key {} -cert {} -tls1_2 >> {}'
+		cmd = ('s_server -key {} -cert {} -tls1_2 -port 443 >> {}'
 			.format(priv, cert, server_log_file))
 
 	global server_cert
@@ -42,16 +42,16 @@ def btls_server_cert(tmpdirname, server_log_file, curve, psk=False):
 def btls_client_cert(client_log_file, curve, ciphersuites, psk=False):
 	for ciphersuite in ciphersuites:
 		if psk:
-			cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -prexit >{}'
+			cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -connect localhost:443 -prexit >{}'
 				.format(ciphersuite, client_log_file))
 		else:
-			cmd = ('s_client -cipher {} -tls1_2 -prexit >{}'
+			cmd = ('s_client -cipher {} -tls1_2 -connect localhost:443 -prexit >{}'
 				.format(ciphersuite, client_log_file))
 
 		openssl(cmd, prefix='echo test_{}={} |'.format(curve, ciphersuite))
 
 def btls_server_nocert(server_log_file):
-	cmd = ('s_server -tls1_2 -psk 123456 -psk_hint 123 -nocert >> {}'
+	cmd = ('s_server -tls1_2 -psk 123456 -psk_hint 123 -nocert -port 443 >> {}'
 		.format(server_log_file))
 
 	global server_nocert
@@ -61,10 +61,10 @@ def btls_client_nocert(client_log_file, curves_list, ciphersuites):
 	for ciphersuite in ciphersuites:
 		for curves in curves_list:
 			if curves != 'NULL':
-				cmd = ('s_client -cipher {} -tls1_2 -curves {} -psk 123456 -prexit >{}'
+				cmd = ('s_client -cipher {} -tls1_2 -curves {} -psk 123456 -connect localhost:443 -prexit >{}'
 					.format(ciphersuite, curves, client_log_file))
 			else:
-				cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -prexit >{}'
+				cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -connect localhost:443 -prexit >{}'
 					.format(ciphersuite, client_log_file))
 			openssl(cmd, prefix='echo test_{}={} |'
 				.format(curves, ciphersuite))
