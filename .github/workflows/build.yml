@@ -92,7 +92,7 @@ jobs:
         python test.py
         export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
           sed -e "s|${local}/lib:||")
-    - name: Print logs
+    - name: Print btls logs
       working-directory: ${{github.workspace}}/build
       run: |
         cat s_log.txt
