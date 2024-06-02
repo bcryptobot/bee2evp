@@ -56,13 +56,11 @@ jobs:
         ls -la ${local}/lib/libcrypto.so
         ls -la ${local}/lib/libssl.so
         ls -la ${local}/bin/openssl
-    - name: Registrate OpenSSL
-      run: |
-        export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH}"
-        sudo ldconfig
     - name: Build Bee2evp
       working-directory: ${{github.workspace}}/build
       run: |
+        export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH}"
+        sudo ldconfig
         cmake -DCMAKE_BUILD_TYPE=Release \
           -DBEE2_LIBRARY_DIRS=${local}/lib \
           -DBEE2_INCLUDE_DIRS=${local}/include \
@@ -73,7 +71,9 @@ jobs:
         make > build.log 2>&1 || (cat build.log && exit 1)
         make install > build.log 2>&1 || (cat build.log && exit 1)
         ls -la ${local}/lib/libbee2evp.so
-    - name: Registrate Bee2evp
+        export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
+          sed -e "s|${local}/lib:||")
+    - name: Attach Bee2evp
       run: |
         cp ${local}/openssl.cnf.dist ${local}/openssl.cnf
         sed -i "/\[ new\_oids \]/i openssl_conf = openssl_init\
@@ -91,8 +91,12 @@ jobs:
       continue-on-error: true
       run: |
         cp -a ../test/. .
+        export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH}"
+        sudo ldconfig
         python --version
         python test.py
+        export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
+          sed -e "s|${local}/lib:||")
     - name: Print Bee2evp logs
       working-directory: ${{github.workspace}}/build
       run: |
@@ -104,7 +108,3 @@ jobs:
         cat c_log.txt
         echo "**** c_err.txt" 
         cat c_err.txt
-    - name: Unregistrate OpenSSL
-      run: >
-        export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | 
-        sed -e "s|${local}/lib:||")
