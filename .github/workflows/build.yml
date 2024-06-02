@@ -96,4 +96,5 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: |
         cat c_log.txt
+        cat c_err.txt
         cat s_log.txt

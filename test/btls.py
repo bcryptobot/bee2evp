@@ -42,16 +42,16 @@ def btls_server_cert(tmpdirname, server_log_file, curve, psk=False):
 def btls_client_cert(client_log_file, curve, ciphersuites, psk=False):
 	for ciphersuite in ciphersuites:
 		if psk:
-			cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -connect localhost:443 -prexit >{}'
+			cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -connect localhost:443 -pause -prexit >>{} 2>>c_err.txt'
 				.format(ciphersuite, client_log_file))
 		else:
-			cmd = ('s_client -cipher {} -tls1_2 -connect localhost:443 -prexit >{}'
+			cmd = ('s_client -cipher {} -tls1_2 -connect localhost:443 -pause -prexit >>{} 2>>c_err.txt'
 				.format(ciphersuite, client_log_file))
 
 		openssl(cmd, prefix='echo test_{}={} |'.format(curve, ciphersuite))
 
 def btls_server_nocert(server_log_file):
-	cmd = ('s_server -tls1_2 -psk 123456 -psk_hint 123 -nocert -port 443 >> {}'
+	cmd = ('s_server -tls1_2 -psk 123456 -psk_hint 123 -nocert -port 443 >>{}'
 		.format(server_log_file))
 
 	global server_nocert
@@ -61,10 +61,10 @@ def btls_client_nocert(client_log_file, curves_list, ciphersuites):
 	for ciphersuite in ciphersuites:
 		for curves in curves_list:
 			if curves != 'NULL':
-				cmd = ('s_client -cipher {} -tls1_2 -curves {} -psk 123456 -connect localhost:443 -prexit >{}'
+				cmd = ('s_client -cipher {} -tls1_2 -curves {} -psk 123456 -connect localhost:443 -pause -prexit >>{} 2>>c_err.txt'
 					.format(ciphersuite, curves, client_log_file))
 			else:
-				cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -connect localhost:443 -prexit >{}'
+				cmd = ('s_client -cipher {} -tls1_2 -psk 123456 -connect localhost:443 -pause -prexit >>{} 2>>c_err.txt'
 					.format(ciphersuite, client_log_file))
 			openssl(cmd, prefix='echo test_{}={} |'
 				.format(curves, ciphersuite))
@@ -102,7 +102,7 @@ def btls_test():
 		s_nopsk = threading.Thread(target=btls_server_cert, 
 			args=(tmpdirname, server_log_file, curve))
 		s_nopsk.run()
-		time.sleep(1)
+		time.sleep(100)
 		c_nopsk = threading.Thread(target=btls_client_cert, 
 			args=(client_log_file, curve, noPSK_ciphersuites))
 		c_nopsk.run()
