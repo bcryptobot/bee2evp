@@ -31,7 +31,7 @@ def openssl(cmd, prefix='', echo=False, check=True):
 
 	return retcode, out, err_out
 
-def openssl2(cmd, prefix='', echo=False):
+def openssl2(cmd, prefix='sudo', echo=False):
 	cmd = '{} {} {}'.format(prefix, OPENSSL_EXE_PATH, cmd)
 	if echo:
 		print(cmd)
