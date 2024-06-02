@@ -98,3 +98,4 @@ jobs:
         cat c_log.txt
         cat c_err.txt
         cat s_log.txt
+        cat s_err.txt
