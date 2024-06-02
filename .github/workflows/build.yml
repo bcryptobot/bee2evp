@@ -22,8 +22,6 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: 3.12
-    - name: Install lcov
-      run: sudo apt install -y lcov
     - name: Get source
       uses: actions/checkout@v3
     - name: Get Bee2 and OpenSSL
@@ -61,7 +59,7 @@ jobs:
     - name: Build Bee2evp
       working-directory: ${{github.workspace}}/build
       run: |
-        cmake -DCMAKE_BUILD_TYPE=Coverage \
+        cmake -DCMAKE_BUILD_TYPE=Release \
           -DBEE2_LIBRARY_DIRS=${local}/lib \
           -DBEE2_INCLUDE_DIRS=${local}/include \
           -DOPENSSL_LIBRARY_DIRS=${local}/lib \
@@ -89,19 +87,13 @@ jobs:
       continue-on-error: true
       run: |
         cp -a ../test/. .
-        lcov -c -i -d . -o coverage_base.info
         export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH:-}"
         python --version
         python test.py
         export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
           sed -e "s|${local}/lib:||")
-    - name: Upload coverage report to Codecov
+    - name: Print logs
       working-directory: ${{github.workspace}}/build
       run: |
         cat s_log.txt
         cat c_log.txt
-        lcov -c -d . -o coverage_test.info
-        lcov -a coverage_base.info -a coverage_test.info -o coverage.info
-        curl -Os https://uploader.codecov.io/latest/linux/codecov
-        chmod +x codecov 
-        ./codecov -t ${CODECOV_TOKEN}
