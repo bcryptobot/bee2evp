@@ -30,10 +30,10 @@ def btls_server_cert(tmpdirname, server_log_file, curve, psk=False):
 	btls_issue_cert(priv, cert)
 
 	if psk:
-		cmd = 's_server -key {} -cert {} -tls1_2 -psk 123456 -psk_hint 123 \
+		cmd = 'sudo s_server -key {} -cert {} -tls1_2 -psk 123456 -psk_hint 123 \
 			-port 443 >>{} 2>>s_err.txt'.format(priv, cert, server_log_file)
 	else:
-		cmd = ('s_server -key {} -cert {} -tls1_2 -port 443 >>{} 2>>s_err.txt'
+		cmd = ('sudo s_server -key {} -cert {} -tls1_2 -port 443 >>{} 2>>s_err.txt'
 			.format(priv, cert, server_log_file))
 
 	global server_cert
@@ -51,7 +51,7 @@ def btls_client_cert(client_log_file, curve, ciphersuites, psk=False):
 		openssl(cmd, prefix='echo test_{}={} |'.format(curve, ciphersuite))
 
 def btls_server_nocert(server_log_file):
-	cmd = ('s_server -tls1_2 -psk 123456 -psk_hint 123 -nocert -port 443 >>{} 2>>s_err.txt'
+	cmd = ('sudo s_server -tls1_2 -psk 123456 -psk_hint 123 -nocert -port 443 >>{} 2>>s_err.txt'
 		.format(server_log_file))
 
 	global server_nocert
