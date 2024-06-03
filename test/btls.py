@@ -108,7 +108,7 @@ def btls_test():
 		c_nopsk.run()
 
 		# kill openssl s_server
-		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
+#		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
 	print('End NO_PSK')
 
 	# test BDHTPSK ciphersuites
@@ -122,20 +122,20 @@ def btls_test():
 		c_dhtpsk.run()
 
 		# kill openssl s_server
-		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
+#		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
 	print('End BDHTPSK')
 
 	# test BDHEPSK ciphersuites
 	s_dhepsk = threading.Thread(target=btls_server_nocert, 
 					args=(server_log_file,))
 	s_dhepsk.run()
-	time.sleep(1)
+	time.sleep(100)
 	c_dhepsk = threading.Thread(target=btls_client_nocert, 
 		args=(client_log_file, curves_list_bdhepsk, bdhePSK_ciphersuites))
 	c_dhepsk.run()
 
 	# kill openssl s_server
-	os.killpg(os.getpgid(server_nocert.pid), signal.SIGTERM)
+#	os.killpg(os.getpgid(server_nocert.pid), signal.SIGTERM)
 	print('End BDHEPSK')
 
 	with open(server_log_file, 'r') as f:
