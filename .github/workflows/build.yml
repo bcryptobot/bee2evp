@@ -19,6 +19,9 @@ jobs:
       CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
       local: ${{github.workspace}}/build
     steps:
+    - name: Setup Git
+      run: |
+        apt update; apt install -y git
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
