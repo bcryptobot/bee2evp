@@ -19,10 +19,10 @@ jobs:
       CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
       local: ${{github.workspace}}/build
     steps:
-    - name: Setup Git
+    - name: Setup Git and CMake
       run: |
         apt update
-        apt install -y git
+        apt install -y git cmake
         git config --global --add safe.directory '*' 
     - name: Setup Python
       uses: actions/setup-python@v5
