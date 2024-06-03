@@ -12,7 +12,7 @@ jobs:
   build:
     name: Build and test
     runs-on: ubuntu-latest
-	container: ubuntu
+    container: ubuntu
     env:
       OPENSSL_BRANCH: OpenSSL_1_1_1i
       BEE2_BRANCH: master
