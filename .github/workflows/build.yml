@@ -21,6 +21,7 @@ jobs:
     steps:
     - name: Setup Git and CMake
       run: |
+        apt update
         apt install -y git cmake
         git config --global --add safe.directory '*' 
     - name: Setup Python
