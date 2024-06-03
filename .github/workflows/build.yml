@@ -21,7 +21,9 @@ jobs:
     steps:
     - name: Setup Git
       run: |
-        apt update; apt install -y git
+        apt update
+        apt install -y git
+        git config --global --add safe.directory '*' 
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
