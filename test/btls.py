@@ -30,10 +30,10 @@ def btls_server_cert(tmpdirname, server_log_file, curve, psk=False):
 	btls_issue_cert(priv, cert)
 
 	if psk:
-		cmd = 's_server -key {} -cert {} -tls1_2 -psk 123456 -psk_hint 123 \
+		cmd = 's_server -rev -key {} -cert {} -tls1_2 -psk 123456 -psk_hint 123 \
 			>>{} 2>>s_err.txt'.format(priv, cert, server_log_file)
 	else:
-		cmd = ('s_server -key {} -cert {} -tls1_2 >>{} 2>>s_err.txt'
+		cmd = ('s_server -rev -key {} -cert {} -tls1_2 >>{} 2>>s_err.txt'
 			.format(priv, cert, server_log_file))
 
 	global server_cert
@@ -51,7 +51,7 @@ def btls_client_cert(client_log_file, curve, ciphersuites, psk=False):
 		openssl(cmd, prefix='echo test_{}={} |'.format(curve, ciphersuite))
 
 def btls_server_nocert(server_log_file):
-	cmd = ('s_server -tls1_2 -psk 123456 -psk_hint 123 -nocert >>{} 2>>s_err.txt'
+	cmd = ('s_server -rev -tls1_2 -psk 123456 -psk_hint 123 -nocert >>{} 2>>s_err.txt'
 		.format(server_log_file))
 
 	global server_nocert
@@ -108,7 +108,7 @@ def btls_test():
 		c_nopsk.run()
 
 		# kill openssl s_server
-#		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
+		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
 	print('End NO_PSK')
 
 	# test BDHTPSK ciphersuites
@@ -122,7 +122,7 @@ def btls_test():
 		c_dhtpsk.run()
 
 		# kill openssl s_server
-#		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
+		os.killpg(os.getpgid(server_cert.pid), signal.SIGTERM)
 	print('End BDHTPSK')
 
 	# test BDHEPSK ciphersuites
@@ -135,7 +135,7 @@ def btls_test():
 	c_dhepsk.run()
 
 	# kill openssl s_server
-#	os.killpg(os.getpgid(server_nocert.pid), signal.SIGTERM)
+	os.killpg(os.getpgid(server_nocert.pid), signal.SIGTERM)
 	print('End BDHEPSK')
 
 	with open(server_log_file, 'r') as f:
