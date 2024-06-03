@@ -21,7 +21,6 @@ jobs:
     steps:
     - name: Setup Git and CMake
       run: |
-        apt update
         apt install -y git cmake
         git config --global --add safe.directory '*' 
     - name: Setup Python
@@ -94,11 +93,8 @@ jobs:
       run: |
         cp -a ../test/. .
         export LD_LIBRARY_PATH="${local}/lib:${LD_LIBRARY_PATH}"
-        export PATH="${local}/bin:${PATH}"
-        sudo ldconfig
         python3 --version
         python3 test.py
-        export PATH=$(echo "$PATH" | sed -e "s|${local}/bin:||")
         export LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | \
           sed -e "s|${local}/lib:||")
     - name: Print Bee2evp logs
